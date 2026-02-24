@@ -1,3 +1,4 @@
+import PermissionsCheckerProvider from '@/presentation/providers/PermissionsCheckerProvider';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -14,14 +15,16 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{headerShown: false}}>
+      <PermissionsCheckerProvider>
+        <Stack screenOptions={{headerShown: false}}>
 
-        <Stack.Screen name="loading/index" options={{animation: none}}/>
-        <Stack.Screen name="map/index" options={{animation: fade}}/>
-        <Stack.Screen name="permissions/index" options={{animation: fade}}/>
+        <Stack.Screen name="loading/index" options={{animation: 'none'}}/>
+        <Stack.Screen name="map/index" options={{animation: 'fade'}}/>
+        <Stack.Screen name="permissions/index" options={{animation: 'fade'}}/>
 
       </Stack>
       <StatusBar style="auto" />
+      </PermissionsCheckerProvider> 
     </ThemeProvider>
   );
 }
