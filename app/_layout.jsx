@@ -6,9 +6,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/presentation/hooks/use-color-scheme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,15 +14,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PermissionsCheckerProvider>
-        <Stack screenOptions={{headerShown: false}}>
+        <Stack screenOptions={{ headerShown: false }}>
 
-        <Stack.Screen name="loading/index" options={{animation: 'none'}}/>
-        <Stack.Screen name="map/index" options={{animation: 'fade'}}/>
-        <Stack.Screen name="permissions/index" options={{animation: 'fade'}}/>
+          <Stack.Screen name="loading/index" options={{ animation: 'none' }} />
+          <Stack.Screen name="map/index" options={{ animation: 'fade' }} />
+          <Stack.Screen name="permissions/index" options={{ animation: 'fade' }} />
 
-      </Stack>
-      <StatusBar style="auto" />
-      </PermissionsCheckerProvider> 
+        </Stack>
+        <StatusBar style="auto" />
+      </PermissionsCheckerProvider>
     </ThemeProvider>
   );
 }
