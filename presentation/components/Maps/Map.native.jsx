@@ -4,9 +4,32 @@ import { useLocationStore } from '../../store/useLocationStore';
 import { View, StyleSheet, Platform, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export const Map = ({ showPolyline = true }) => {
+export const Map = React.forwardRef(({ showPolyline = true }, ref) => {
   const mapRef = useRef(null);
-  const { lastKnownLocation, userLocationList, watchLocation, clearWatch } = useLocationStore();
+  
+  React.useImperativeHandle(ref, () => ({
+    moveToLocation: (latitude, longitude) => {
+      if (mapRef.current) {
+        mapRef.current.animateToRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }, 1000);
+      }
+    }
+  }));
+
+  const { 
+    lastKnownLocation, 
+    userLocationList, 
+    watchLocation, 
+    clearWatch,
+    mapType,
+    customMarkers,
+    addMarker,
+    removeMarker 
+  } = useLocationStore();
 
   useEffect(() => {
     watchLocation();
@@ -24,6 +47,15 @@ export const Map = ({ showPolyline = true }) => {
     }
   };
 
+  const handleLongPress = (event) => {
+    const { coordinate } = event.nativeEvent;
+    addMarker({
+      coordinate,
+      title: 'Nuevo Marcador',
+      description: 'Presiona el marcador para opciones'
+    });
+  };
+
   return (
     <View style={styles.container}>
       <MapView
@@ -31,6 +63,8 @@ export const Map = ({ showPolyline = true }) => {
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         style={styles.map}
         showsUserLocation
+        mapType={mapType}
+        onLongPress={handleLongPress}
         initialRegion={{
           latitude: lastKnownLocation?.latitude || 37.78825,
           longitude: lastKnownLocation?.longitude || -122.4324,
@@ -45,14 +79,17 @@ export const Map = ({ showPolyline = true }) => {
             strokeWidth={4}
           />
         )}
-        
-        {lastKnownLocation && (
-           <Marker 
-             coordinate={lastKnownLocation}
-             title="Mi Ubicación"
-             description="Estoy aquí en tiempo real"
-           />
-        )}
+
+        {customMarkers.map((marker) => (
+          <Marker
+            key={marker.id}
+            coordinate={marker.coordinate}
+            title={marker.title}
+            description={marker.description}
+            pinColor="red"
+            onCalloutPress={() => removeMarker(marker.id)}
+          />
+        ))}
       </MapView>
 
       <TouchableOpacity 
@@ -63,7 +100,7 @@ export const Map = ({ showPolyline = true }) => {
       </TouchableOpacity>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

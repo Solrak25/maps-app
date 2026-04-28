@@ -5,6 +5,8 @@ export const useLocationStore = create((set, get) => ({
   lastKnownLocation: null,
   userLocationList: [],
   watchId: null,
+  customMarkers: [],
+  mapType: 'standard',
 
   getLocation: async () => {
     const location = await Location.getCurrentPositionAsync({
@@ -48,5 +50,17 @@ export const useLocationStore = create((set, get) => ({
       watchId.remove();
       set({ watchId: null });
     }
+  },
+
+  addMarker: (marker) => {
+    set({ customMarkers: [...get().customMarkers, { ...marker, id: Date.now().toString() }] });
+  },
+
+  removeMarker: (id) => {
+    set({ customMarkers: get().customMarkers.filter((m) => m.id !== id) });
+  },
+
+  setMapType: (type) => {
+    set({ mapType: type });
   },
 }));

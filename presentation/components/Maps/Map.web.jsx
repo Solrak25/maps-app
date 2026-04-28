@@ -1,20 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
-export const Map = () => {
+export const Map = React.forwardRef(({ showPolyline = true }, ref) => {
   return (
-    <View style={styles.container}>
-      <Ionicons name="map-outline" size={64} color="#666" />
-      <Text style={styles.text}>
-        El mapa no está disponible en la versión Web.
-      </Text>
-      <Text style={styles.subtext}>
-        Por favor, abre la aplicación en un emulador de Android/iOS o en un dispositivo real usando Expo Go para ver el mapa en tiempo real.
-      </Text>
+    <View style={styles.container} ref={ref}>
+      <Text style={styles.text}>El mapa no está disponible en la versión web todavía.</Text>
+      <Text style={styles.subtext}>Usa un dispositivo Android o iOS para ver la funcionalidad completa.</Text>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
